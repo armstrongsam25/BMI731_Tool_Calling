@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: hapi-fhir-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: hapi_fhir
+      POSTGRES_USER: hapi_fhir
+      POSTGRES_PASSWORD: hapi_fhir_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hapi-fhir-net
+
+  hapi-fhir-server:
+    image: hapiproject/hapi:v5.6.0
+    container_name: hapi-fhir-server
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hapi_fhir
+      - SPRING_DATASOURCE_USERNAME=hapi_fhir
+      - SPRING_DATASOURCE_PASSWORD=hapi_fhir_password
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - HAPI_FHIR_DATASOURCE_DRIVER_CLASS=org.postgresql.Driver
+      - JAVA_OPTS=-Dhibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    depends_on:
+      - postgres
+    networks:
+      - hapi-fhir-net
+
+volumes:
+  postgres_data:
+
+networks:
+  hapi-fhir-net:
+    driver: bridge

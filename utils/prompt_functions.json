@@ -1,0 +1,226 @@
+{
+  "lc": 1,
+  "type": "constructor",
+  "id": [
+    "langchain",
+    "prompts",
+    "chat",
+    "ChatPromptTemplate"
+  ],
+  "kwargs": {
+    "input_variables": [
+      "agent_scratchpad",
+      "input"
+    ],
+    "optional_variables": [
+      "chat_history"
+    ],
+    "partial_variables": {
+      "chat_history": []
+    },
+    "metadata": {
+      "lc_hub_owner": "hwchase17",
+      "lc_hub_repo": "openai-functions-agent",
+      "lc_hub_commit_hash": "a1655024b06afbd95d17449f21316291e0726f13dcfaf990cc0d18087ad689a5"
+    },
+    "messages": [
+      {
+        "lc": 1,
+        "type": "constructor",
+        "id": [
+          "langchain",
+          "prompts",
+          "chat",
+          "SystemMessagePromptTemplate"
+        ],
+        "kwargs": {
+          "prompt": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "prompts",
+              "prompt",
+              "PromptTemplate"
+            ],
+            "kwargs": {
+              "input_variables": [],
+              "template": "You are a helpful assistant",
+              "template_format": "f-string"
+            },
+            "name": "PromptTemplate",
+            "graph": {
+              "nodes": [
+                {
+                  "id": 0,
+                  "type": "schema",
+                  "data": "PromptInput"
+                },
+                {
+                  "id": 1,
+                  "type": "runnable",
+                  "data": {
+                    "id": [
+                      "langchain",
+                      "prompts",
+                      "prompt",
+                      "PromptTemplate"
+                    ],
+                    "name": "PromptTemplate"
+                  }
+                },
+                {
+                  "id": 2,
+                  "type": "schema",
+                  "data": "PromptTemplateOutput"
+                }
+              ],
+              "edges": [
+                {
+                  "source": 0,
+                  "target": 1
+                },
+                {
+                  "source": 1,
+                  "target": 2
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "lc": 1,
+        "type": "constructor",
+        "id": [
+          "langchain",
+          "prompts",
+          "chat",
+          "MessagesPlaceholder"
+        ],
+        "kwargs": {
+          "variable_name": "chat_history",
+          "optional": true
+        }
+      },
+      {
+        "lc": 1,
+        "type": "constructor",
+        "id": [
+          "langchain",
+          "prompts",
+          "chat",
+          "HumanMessagePromptTemplate"
+        ],
+        "kwargs": {
+          "prompt": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "prompts",
+              "prompt",
+              "PromptTemplate"
+            ],
+            "kwargs": {
+              "input_variables": [
+                "input"
+              ],
+              "template": "{input}",
+              "template_format": "f-string"
+            },
+            "name": "PromptTemplate",
+            "graph": {
+              "nodes": [
+                {
+                  "id": 0,
+                  "type": "schema",
+                  "data": "PromptInput"
+                },
+                {
+                  "id": 1,
+                  "type": "runnable",
+                  "data": {
+                    "id": [
+                      "langchain",
+                      "prompts",
+                      "prompt",
+                      "PromptTemplate"
+                    ],
+                    "name": "PromptTemplate"
+                  }
+                },
+                {
+                  "id": 2,
+                  "type": "schema",
+                  "data": "PromptTemplateOutput"
+                }
+              ],
+              "edges": [
+                {
+                  "source": 0,
+                  "target": 1
+                },
+                {
+                  "source": 1,
+                  "target": 2
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "lc": 1,
+        "type": "constructor",
+        "id": [
+          "langchain",
+          "prompts",
+          "chat",
+          "MessagesPlaceholder"
+        ],
+        "kwargs": {
+          "variable_name": "agent_scratchpad"
+        }
+      }
+    ]
+  },
+  "name": "ChatPromptTemplate",
+  "graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "type": "schema",
+        "data": "PromptInput"
+      },
+      {
+        "id": 1,
+        "type": "runnable",
+        "data": {
+          "id": [
+            "langchain",
+            "prompts",
+            "chat",
+            "ChatPromptTemplate"
+          ],
+          "name": "ChatPromptTemplate"
+        }
+      },
+      {
+        "id": 2,
+        "type": "schema",
+        "data": "ChatPromptTemplateOutput"
+      }
+    ],
+    "edges": [
+      {
+        "source": 0,
+        "target": 1
+      },
+      {
+        "source": 1,
+        "target": 2
+      }
+    ]
+  }
+}
