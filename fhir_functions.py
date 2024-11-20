@@ -109,7 +109,7 @@ def calculate_birthdate_range(min_age, max_age):
 	return start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
 
 def get_medications(id, medication_counts):
-	url = "http://localhost:8080/fhir/MedicationAdministration"
+	url = "http://localhost:8080/fhir/MedicationRequest" # can also use MedicationAdministration but less records
 	params = {
 		"subject": id,
 		"_pretty": "false",

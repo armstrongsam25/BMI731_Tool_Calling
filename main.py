@@ -5,7 +5,8 @@ from langchain_core.tools import StructuredTool
 from langchain_openai import ChatOpenAI
 
 from fhir_functions import *
-from secrets import LLM_FACTORY_API_KEY
+from secret_keys import LLM_FACTORY_API_KEY
+
 
 def find_care_team(first_name: str, last_name: str) -> dict:
 	return get_care_team(first_name, last_name)
@@ -27,7 +28,6 @@ birthdate = StructuredTool.from_function(
 	name="Birthdate",
 	description="Retrieves a list of patients with birth dates between 2 dates. The date format must be YYYY-mm-dd.",
 )
-
 
 
 def medications_for_age_group(start_age: str, end_age: str) -> dict:
@@ -71,20 +71,62 @@ if __name__ == '__main__':
 	)
 
 	agent = create_tool_calling_agent(llm, tools, prompt)
-	agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, stream_runnable=False)
+	agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False, stream_runnable=False)
 
-	q1 = agent_executor.invoke({"input": "Who are the patients with birthdays between 02/15/1999 and 02/15/2000?"})
-	print(f"QUESTION: {q1['input']}\n")
-	print(q1['output'])
-	print('\n\n')
+	date_range_eval = ['02/15/1999', '02/15/2000', '02/15/2001', '02/15/2002', '02/15/2003', '02/15/2004', '02/15/2005',
+					   '02/15/2006', '02/15/2007', '02/15/2008', '02/15/2009']
 
-	q2 = agent_executor.invoke({"input": "Who is on the care team for Shondra529 Armstrong51?"})
-	print(f"QUESTION: {q2['input']}\n")
-	print(q2['output'])
-	print('\n\n')
+	for i, _ in enumerate(date_range_eval):
+		if i == len(date_range_eval) - 1:
+			break
+		q1 = agent_executor.invoke({"input": "Who are the patients with birthdays between " + date_range_eval[
+			i] + " and " + date_range_eval[i + 1] + "?"})
+		print(f"QUESTION: {q1['input']}\n")
+		print(q1['output'])
+		print('\n\n')
 
-	# This data set is filled with very old people, so the high end of the range should be something like 65 or so
-	q3 = agent_executor.invoke({"input": "What are the most taken medications for ages 55-95?"})
-	print(f"QUESTION: {q3['input']}\n")
-	print(q3['output'])
-	print('\n\n')
+	# 10/10 correct
+
+	# 5 real names, 5 fake names
+	names_eval = ['Shondra529 Armstrong51', 'Angelika194 Tremblay80', 'Bernice532 Ziemann98', 'Candace369 Emmerich580',
+				  'Cleveland582 Gulgowski816', 'John1 Cena99', 'Alien12 NotReal33', 'Fake3 Person84', 'Cool55 Guy34',
+				  'John32 Name89']
+
+	for i, _ in enumerate(names_eval):
+		q2 = agent_executor.invoke({"input": "Who is on the care team for "+names_eval[i]+"?"})
+		print(f"QUESTION: {q2['input']}\n")
+		print(q2['output'])
+		print('\n\n')
+
+	# 10/10 correct
+
+	age_ranges_eval = ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80', '81-90', '91-100']
+
+	for i, _ in enumerate(age_ranges_eval):
+		q3 = agent_executor.invoke({"input": "Give me the top 10 most taken medications for ages "+age_ranges_eval[i]+"?"})
+		print(f"QUESTION: {q3['input']}\n")
+		print(q3['output'])
+		print('\n\n')
+
+	# 10/10 correct
+
+	# testing if the LLM can still act like an LLM
+	random_questions_eval = ['What is the historical average temperature in Lexington, KY in November?',
+							 'What comes next in this sequence: 1, 2, 3, D?',
+							 'If a train leaves Chicago traveling east at 80 mph and another leaves New York traveling west at 60 mph, where is the conductor of the second train sitting?',
+							 'Which is heavier: a pound of feathers or a pound of gold?',
+							 'I have a box with six apples. You take three away. How many apples do you have?',
+							 'How many letters are in the answer to this question?',
+							 'A farmer has 17 sheep, and all but nine run away. How many sheep are left?',
+							 'Can an all-powerful being create a stone so heavy that even it cannot lift it?',
+							 'Is the statement “This sentence is false” true or false?',
+							 'Spell the word “silk” out loud. What do cows drink?'
+							 ]
+	# Question not related to medical dataset
+	for i, _ in enumerate(random_questions_eval):
+		q4 = agent_executor.invoke({"input": random_questions_eval[i]})
+		print(f"QUESTION: {q4['input']}\n")
+		print(q4['output'])
+		print('\n\n')
+
+	# 10/10 correct (or not bad answers)
