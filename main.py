@@ -160,5 +160,4 @@ if __name__ == '__main__':
 		print(f"QUESTION: {q4['input']}\n")
 		print(q4['output'])
 		print('\n\n')
-		break
 	# 10/10 correct (or not bad answers)
