@@ -1,3 +1,4 @@
+import json
 from collections import defaultdict
 
 import requests
@@ -164,13 +165,59 @@ def get_meds_for_age_group(start_age, end_age):
 		return dict()
 
 
-# get list of meds for each patient
 
-# count the occurences of meds
+def observations_query(p_fname, p_lname):
+	url = "http://localhost:8080/fhir/Observation"
+	patient_id = get_patient_id(p_fname, p_lname)
+	if patient_id is None:
+		return dict()
+	params = {
+		"subject": patient_id,
+		"_pretty": "false",
+		"_count": 100000
+	}
+
+	response = requests.get(url, params=params)
+
+	# Check the response
+	if response.status_code == 200:
+		response_json = response.json()
+		observations = []
+
+		if response_json['total'] > 0:
+			for entry in response_json['entry']:
+				observation = dict()
+				observation['category'] = entry['resource']['category'][0]['coding'][0]['code']
+				observation['code'] = entry['resource']['code']['text']
+				observation['encounter'] = entry['resource']['encounter']['reference']
+				observation['timeRecorded'] = entry['resource']['effectiveDateTime']
+				measurements = []
+				if 'component' in entry['resource']:
+					for measurement in entry['resource']['component']:
+						values = dict()
+						values['text'] = measurement['code']['text']
+						values['value'] = str(measurement['valueQuantity']['value']) + " " + measurement['valueQuantity']['unit']
+						measurements.append(values)
+					observation['measurements'] = measurements
+				elif 'valueCodeableConcept' in entry['resource']:
+					observation['measurements'] = entry['resource']['valueCodeableConcept']['text']
+				elif 'valueQuantity' in entry['resource']:
+					observation['measurements'] = str(entry['resource']['valueQuantity']['value']) + " " + entry['resource']['valueQuantity']['unit']
+
+				observations.append(observation)
+
+		# print(json.dumps(observations))
+		return observations
+	else:
+		print(f"Failed to get data: {response.status_code}")
+		return dict()
+
 
 
 if __name__ == '__main__':
 	# print(birthdate_query("1999-02-15", "2000-02-15"))
 
 	# print(get_care_team('Shondra529', 'Armstrong51'))
-	print(get_meds_for_age_group(0, 65))
+	# print(get_meds_for_age_group(0, 65))
+
+	observations_query('Shondra529', 'Armstrong51')
