@@ -17,7 +17,6 @@ The system includes the following components:
 - CLI User Interface: Accepts clinician queries and provides responses. (Website UI under development.)
 
 ## Evaluation
-
 The system was evaluated using five types of queries across multiple test cases:
 
 - Patient observations. 
@@ -32,6 +31,13 @@ Results (Sample Size: 50 Queries):
 - Recall: 0.875 
 - Accuracy: 0.900 
 - F1 Score: 0.933
+
+
+## How to Run It
+1. `pip install -r requirements.txt`
+2. Rename `secret_keys.py.example` to `secret_keys.py`
+3. Input LLM Factory API key into `secret_keys.py` file
+4. Run the script using `python main.py`
 
 
 ## References
